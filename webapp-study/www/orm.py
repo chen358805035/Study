@@ -149,16 +149,20 @@ class ModelMetaclass(type):
         primaryKey = None
         # 获取字典键值和值
         for k, v in attrs.items():
+            print("k = %s******v=%s" % (k, v))
             # isinstance() 函数来判断一个对象是否是一个已知的类型，类似 type()。
             if isinstance(v, Field):
+                print("找到映射： %s ==> %s" % (k, v))
                 logging.info("找到映射： %s ==> %s" % (k, v))
                 mappings[k] = v
                 # 如果键值不为空
                 if v.primary_key:
+                    print("v.primary_key = %s" % v.primary_key)
                     # 找到主键值。如果primaryKey不为空则执行错误
                     if primaryKey:
                         raise StandardError("复制字段的主键: %s" % k)
-                    primaryKey = v
+                    # 这里赋值成了V导致getattr方法错误
+                    primaryKey = k
                 # 如果键值为空则将值添加到fields中
                 else:
                     fields.append(k)
@@ -173,6 +177,10 @@ class ModelMetaclass(type):
         # ap(lambda f: '`%s`' % f, fields)相当于把fields中的数据变成'x','x'...
         escaped_fields = list(map(lambda f: "`%s`" % f, fields))
         # print(escaped_fields)
+        print("mappings = %s" % mappings)
+        print("tableName = %s" % tableName)
+        print("primaryKey = %s" % primaryKey)
+        print("fields = %s" % fields)
         attrs["__mappings__"] = mappings  # 保存属性和列的映射关系
         attrs["__table__"] = tableName
         attrs["__primary_key__"] = primaryKey  # 主键属性名
@@ -184,7 +192,7 @@ class ModelMetaclass(type):
             ", ".join(escaped_fields),
             tableName,
         )
-        attrs["__insert__"] = "insert into `%s` (%s, `%s`) values (%s)" % (
+        attrs["__insert__"] = "insert into %s (%s, %s) values (%s)" % (
             tableName,
             ", ".join(escaped_fields),
             primaryKey,
@@ -219,10 +227,10 @@ class Model(dict, metaclass=ModelMetaclass):
         return getattr(self, key, None)
 
     def getValueOrDefault(self, key):
-        # print(type(key))
-        value = getattr(self, str(key), None)
-        print(type(key))
-        print(value)
+        print("key = %s " % key)
+        value = getattr(self, key, None)
+        # print(key)
+        print("value = %s" % value)
         # 如果值为空
         if value is None:
             field = self.__mappings__[key]
@@ -286,8 +294,12 @@ class Model(dict, metaclass=ModelMetaclass):
         return cls(**rs[0])
 
     async def save(self):
+        print(self.__fields__)
         args = list(map(self.getValueOrDefault, self.__fields__))
+        print("298行 args =%s" % args)
+
         args.append(self.getValueOrDefault(self.__primary_key__))
+        print("301行 args =%s" % args)
         rows = await execute(self.__insert__, args)
         if rows != 1:
             logging.warn("插入记录失败: affected rows: %s" % rows)
