@@ -149,7 +149,7 @@ class ModelMetaclass(type):
         primaryKey = None
         # 获取字典键值和值
         for k, v in attrs.items():
-            print("k = %s******v=%s" % (k, v))
+            # print("k = %s******v=%s" % (k, v))
             # isinstance() 函数来判断一个对象是否是一个已知的类型，类似 type()。
             if isinstance(v, Field):
                 print("找到映射： %s ==> %s" % (k, v))
@@ -157,7 +157,7 @@ class ModelMetaclass(type):
                 mappings[k] = v
                 # 如果键值不为空
                 if v.primary_key:
-                    print("v.primary_key = %s" % v.primary_key)
+                    # print("v.primary_key = %s" % v.primary_key)
                     # 找到主键值。如果primaryKey不为空则执行错误
                     if primaryKey:
                         raise StandardError("复制字段的主键: %s" % k)
@@ -177,10 +177,10 @@ class ModelMetaclass(type):
         # ap(lambda f: '`%s`' % f, fields)相当于把fields中的数据变成'x','x'...
         escaped_fields = list(map(lambda f: "`%s`" % f, fields))
         # print(escaped_fields)
-        print("mappings = %s" % mappings)
-        print("tableName = %s" % tableName)
-        print("primaryKey = %s" % primaryKey)
-        print("fields = %s" % fields)
+        # print("mappings = %s" % mappings)
+        # print("tableName = %s" % tableName)
+        # print("primaryKey = %s" % primaryKey)
+        # print("fields = %s" % fields)
         attrs["__mappings__"] = mappings  # 保存属性和列的映射关系
         attrs["__table__"] = tableName
         attrs["__primary_key__"] = primaryKey  # 主键属性名
