@@ -48,6 +48,7 @@ async def select(sql, args, size=None):
                 # fetchall(self):接收全部的返回结果行.
                 rs = await cur.fetchall()
             logging.info("rows returned : %s" % len(rs))
+            return rs
 
 
 # 数据库执行函数
@@ -152,7 +153,7 @@ class ModelMetaclass(type):
             # print("k = %s******v=%s" % (k, v))
             # isinstance() 函数来判断一个对象是否是一个已知的类型，类似 type()。
             if isinstance(v, Field):
-                print("找到映射： %s ==> %s" % (k, v))
+                # print("找到映射： %s ==> %s" % (k, v))
                 logging.info("找到映射： %s ==> %s" % (k, v))
                 mappings[k] = v
                 # 如果键值不为空
@@ -256,6 +257,7 @@ class Model(dict, metaclass=ModelMetaclass):
             sql.append("order by")
             sql.append(orderBy)
         limit = kw.get("limit", None)
+        print("orderBy = %s, limit = %s" % (orderBy, limit))
         if limit is not None:
             sql.append("limit")
             if isinstance(limit, int):
@@ -268,6 +270,8 @@ class Model(dict, metaclass=ModelMetaclass):
             else:
                 raise ValueError("无效的极限值: %s" % str(limit))
         rs = await select(" ".join(sql), args)
+        # print(" ".join(sql))
+        # print(rs)
         return [cls(**r) for r in rs]
 
     # 查找对应的数据

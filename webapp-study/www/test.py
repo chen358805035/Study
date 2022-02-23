@@ -35,7 +35,7 @@ loop = asyncio.get_event_loop()
 
 
 async def test():
-    await orm.create_pool(user="cb", password="cb", db="cb", loop=loop)
+    await orm.create_pool(user="test", password="web", db="web", loop=loop)
 
     u = User(
         name="Test1",

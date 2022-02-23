@@ -1,12 +1,12 @@
-drop database if exists cb;
+drop database if exists web;
 
-create database cb;
+create database web;
 
-use cb;
+use web;
 
-create user 'cb'@'localhost' identified by 'cb';
+create user 'test'@'localhost' identified by 'web';
 
-grant select, insert, update, delete,create on cb.* to 'cb'@'localhost';
+grant select, insert, update, delete,create on web.* to 'test'@'localhost';
 create table users(
     id varchar(50) not null,
     email varchar(50) not null,
