@@ -1,12 +1,12 @@
-drop database if exists web;
+drop database if exists webapp;
 
-create database web;
+create database webapp;
 
-use web;
+use webapp;
 
-create user 'test'@'localhost' identified by 'web';
+create user 'web'@'localhost' identified by '123456';
 
-grant select, insert, update, delete,create on web.* to 'test'@'localhost';
+grant select, insert, update, delete,create on webapp.* to 'web'@'localhost';
 create table users(
     id varchar(50) not null,
     email varchar(50) not null,
